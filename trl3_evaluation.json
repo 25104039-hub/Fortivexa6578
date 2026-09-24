@@ -1,0 +1,98 @@
+{
+  "trl_stage": "TRL 3 - Experimental Proof of Concept",
+  "methodology_note": "All figures below are computed by actually running detect_rings() and predict_withdrawal_location() against the seeded ground truth in this dataset (server/ml/evaluate_trl3.py) \u2014 they are not hardcoded.",
+  "dataset_benchmarks": {
+    "total_complaint_cases": 128,
+    "synthetic_cases": 120,
+    "hand_authored_demo_cases": 8,
+    "monitored_accounts": 24,
+    "analyzed_transactions": 384,
+    "monitored_locations": 14,
+    "evaluation_protocol": "Full-dataset evaluation, not an 80/20 holdout: this is a rule-based engine with no fitted/learned parameters, so a holdout split would not test generalization the way it does for a trained model. Location predictions use a leave-one-out protocol instead (each case's own ground truth is excluded from its own historical lookup).",
+    "prediction_sample_size": 128
+  },
+  "linkage_metrics": {
+    "seeded_ground_truth_rings": 19,
+    "detected_rings_count": 27,
+    "true_positive_pairs": 118,
+    "false_positive_pairs": 158,
+    "false_negative_pairs": 0,
+    "precision_percentage": 42.8,
+    "recall_percentage": 100.0,
+    "f1_score_percentage": 59.9
+  },
+  "prediction_metrics": {
+    "evaluated_cases": 128,
+    "top_1_hits": 21,
+    "top_3_hits": 71,
+    "top_1_accuracy_percentage": 16.4,
+    "top_3_accuracy_percentage": 55.5,
+    "mean_geodesic_error_km": 5.37
+  },
+  "honest_limitations": {
+    "ring_discrepancy_explanation": "Detected 27 rings vs. 19 seeded (+8). Differences come from cases where a shared secondary mule account is reused across what were seeded as separate syndicates; a live deployment needs temporal decay weighting to avoid merging concurrent rings that happen to share a mule.",
+    "synthetic_data_boundary": "Validation was executed against synthetic multi-hop topologies conforming to SIH standards. Real-world FIR reports often suffer from incomplete bank transaction statements, delayed reporting (>48h), and unindexed payment aggregator wallets.",
+    "probabilistic_caution": "Predictions represent likelihood indices based on historical cashout hubs and mule branch jurisdictions; they do NOT constitute judicial evidence or proof of guilt. On-ground verification by an investigating officer is strictly mandatory.",
+    "cold_start_limitation": "Rings with no prior history in the dataset (first-seen mule hubs) fall back to a weak, generic hotspot-density prior for location prediction \u2014 accuracy on brand-new rings is necessarily lower than on previously-seen ones. This is disclosed rather than papered over with a fixed confidence band."
+  },
+  "validation_stages_checklist": [
+    {
+      "id": "STAGE-1",
+      "title": "Problem Statement Formulation & Law Enforcement Alignment",
+      "status": "COMPLETED",
+      "evidence": "Mapped against SIH cybercrime proactive cashout interception mandate."
+    },
+    {
+      "id": "STAGE-2",
+      "title": "Data Schema Standardization & Synthetic Generation",
+      "status": "COMPLETED",
+      "evidence": "128 structured cases with multi-hop layering and seeded rings."
+    },
+    {
+      "id": "STAGE-3",
+      "title": "Bipartite Graph Cross-Case Linkage Algorithm",
+      "status": "VALIDATED",
+      "evidence": "Computed precision: 42.8%, recall: 100.0% on 19 seeded syndicates (27 detected)."
+    },
+    {
+      "id": "STAGE-4",
+      "title": "Rule-Informed Multi-Factor Predictive Location Model",
+      "status": "VALIDATED",
+      "evidence": "Computed Top-1 accuracy: 16.4%, Top-3 accuracy: 55.5% on 128 leave-one-out cases."
+    },
+    {
+      "id": "STAGE-5",
+      "title": "Plain-Language Feature Attribution & Explainability",
+      "status": "VALIDATED",
+      "evidence": "Multi-factor reasoning output generated per candidate without black-box opacity."
+    },
+    {
+      "id": "STAGE-6",
+      "title": "Field Pilot with State Cyber Police & Core Banking Webhooks",
+      "status": "ROADMAP_TRL_6",
+      "evidence": "Requires live NCRP portal API feeds and state-level MoU (TRL 6+ target)."
+    }
+  ],
+  "roadmap_matrix": [
+    {
+      "dimension": "Mule Detection",
+      "current_trl3": "Graph Connected Components & Bipartite Projection (Python/In-Memory)",
+      "future_trl6": "Neo4j Distributed Graph DB + Dynamic Graph Neural Networks (GNN)"
+    },
+    {
+      "dimension": "Predictive Model",
+      "current_trl3": "Rule-Informed Multi-Factor Spatial Ensemble (Branch Proximity + Historical Hubs)",
+      "future_trl6": "LSTM-based Temporal Path Prediction + Spatio-Temporal Graph ConvNets"
+    },
+    {
+      "dimension": "Data Ingestion",
+      "current_trl3": "Standardized JSON Schema (128 cases, batch upload/CRUD)",
+      "future_trl6": "Direct NCRP / 1930 Portal Webhook Listener + RBI 2-Factor Bank Feeds"
+    },
+    {
+      "dimension": "Audit Ledger",
+      "current_trl3": "Cryptographic SHA-256 Tamper-Evident Merkle/Block Chain POC",
+      "future_trl6": "Hyperledger Besu / Permissioned Inter-Agency Police Consortium"
+    }
+  ]
+}
